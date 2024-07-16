@@ -1,27 +1,47 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AnonyQues</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      .card {
+        margin: 1rem;
+      }
+    </style>
   </head>
-
   <body>
-    <ol id="qa_list">
-      <li>Item 1</li>
-      <li>Item 2</li>
-      <li>Item 3</li>
-    </ol>
+    <div class="container">
+      <h1 class="my-4">AnonyQues</h1>
+      <div class="row" id="qa_list">
+        <!-- Cards will be appended here -->
+      </div>
+    </div>
 
     <script>
       const qa_list_elem = document.getElementById("qa_list");
 
       fetch("http://localhost:8080/api/v1/questions")
-      .then((response) => {return response.json();})
+      .then((response) => response.json())
       .then((jsonResponse) => {
         Object.keys(jsonResponse).forEach((currKey) => {
-          const newListItemElem = document.createElement("li");
-          newListItemElem.innerHTML = `${currKey} <---> ${jsonResponse[currKey]}`;
-          qa_list_elem.appendChild(newListItemElem);
+          const newCardElem = document.createElement("div");
+          newCardElem.className = "col-md-4";
+          newCardElem.innerHTML = `
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Question ${currKey}</h5>
+                <p class="card-text">${jsonResponse[currKey]}</p>
+              </div>
+            </div>
+          `;
+          qa_list_elem.appendChild(newCardElem);
         });
       });
     </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>
 </html>
