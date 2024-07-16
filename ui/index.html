@@ -1,0 +1,27 @@
+<html>
+  <head>
+    <title>AnonyQues</title>
+  </head>
+
+  <body>
+    <ol id="qa_list">
+      <li>Item 1</li>
+      <li>Item 2</li>
+      <li>Item 3</li>
+    </ol>
+
+    <script>
+      const qa_list_elem = document.getElementById("qa_list");
+
+      fetch("http://localhost:8080/api/v1/questions")
+      .then((response) => {return response.json();})
+      .then((jsonResponse) => {
+        Object.keys(jsonResponse).forEach((currKey) => {
+          const newListItemElem = document.createElement("li");
+          newListItemElem.innerHTML = `${currKey} <---> ${jsonResponse[currKey]}`;
+          qa_list_elem.appendChild(newListItemElem);
+        });
+      });
+    </script>
+  </body>
+</html>
