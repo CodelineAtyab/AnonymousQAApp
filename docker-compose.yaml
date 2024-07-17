@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  api:
+    build: .
+    container_name: "qa-api-cont"
+    ports:
+      - "8080:8080"
+    restart: always
+  
+  ui:
+    build: ./ui
+    container_name: "qa-ui-cont"
+    ports:
+      - "9090:80"
+    restart: always
+    depends_on:
+      - api
