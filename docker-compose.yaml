@@ -6,13 +6,25 @@ services:
     container_name: "qa-api-cont"
     ports:
       - "8080:8080"
+    volumes:
+      - cont_logs:/app/logs
     restart: always
   
   ui:
-    build: ./ui
+    image: nginx
     container_name: "qa-ui-cont"
     ports:
       - "9090:80"
+    volumes:
+      - ./ui:/usr/share/nginx/html
     restart: always
     depends_on:
       - api
+
+volumes:
+  cont_logs:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./cont_logs

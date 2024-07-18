@@ -1,8 +1,18 @@
-import uvicorn
+import os
+import logging
 
+import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    handlers=[
+                        logging.FileHandler("./logs/app.log"),
+                        logging.StreamHandler()
+                    ])
+
+logger = logging.getLogger(os.path.basename(__file__))
 
 app = FastAPI()
 
@@ -24,12 +34,15 @@ dict_of_questions = {
 
 @app.get(path="/api/v1/questions")
 def get_all_questions():
+    logger.info("Returning all of the questions")
     return dict_of_questions
 
 
 @app.post(path="/api/v1/questions")
 async def add_question(request: Request):
     recv_json_data = await request.json()
+
+    logger.info(f"Creating a question based on {recv_json_data}")
     dict_of_questions.update(recv_json_data)
     return dict_of_questions
 
