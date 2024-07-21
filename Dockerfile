@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY ./ /app
 
-RUN pip install fastapi[all]
+RUN pip install -r requirements.txt
 
 EXPOSE 8080
 

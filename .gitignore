@@ -1,0 +1,8 @@
+.env
+.idea/
+
+logs/app.log
+src/__pycache__
+
+cont_logs/
+cont_db_data/

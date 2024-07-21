@@ -4,11 +4,18 @@ services:
   api:
     build: .
     container_name: "qa-api-cont"
+    environment:
+      - API_DB_HOST
+      - API_DB_PORT
+      - MYSQL_DATABASE
+      - MYSQL_ROOT_PASSWORD
     ports:
       - "8080:8080"
     volumes:
       - cont_logs:/app/logs
-    restart: always
+    networks:
+      - backend
+    restart: on-failure
   
   ui:
     image: nginx
@@ -17,9 +24,26 @@ services:
       - "9090:80"
     volumes:
       - ./ui:/usr/share/nginx/html
-    restart: always
+    networks:
+      - frontend
+    restart: on-failure
     depends_on:
       - api
+
+  db:
+    image: mysql:9.0.0
+    container_name: "qa-db-cont"
+    environment:
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE
+    ports:
+      - "9999:3306"
+    networks:
+      - backend
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - cont_db_data:/var/lib/mysql
+    restart: on-failure
 
 volumes:
   cont_logs:
@@ -28,3 +52,8 @@ volumes:
       o: bind
       type: none
       device: ./cont_logs
+  cont_db_data: {}
+
+networks:
+  frontend: {}  # Use default settings
+  backend: {}  # Use default settings
