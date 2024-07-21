@@ -1,0 +1,1 @@
+Application logs will be places in this directory

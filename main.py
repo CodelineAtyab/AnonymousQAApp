@@ -47,7 +47,5 @@ async def add_question(request: Request):
     return dict_of_questions
 
 
-
-
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8080)
