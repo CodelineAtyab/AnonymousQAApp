@@ -1,2 +1,5 @@
 .env
 .idea/
+
+logs/app.log
+src/__pycache__
