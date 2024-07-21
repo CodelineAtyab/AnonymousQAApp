@@ -4,6 +4,11 @@ services:
   api:
     build: .
     container_name: "qa-api-cont"
+    environment:
+      - API_DB_HOST
+      - API_DB_PORT
+      - MYSQL_DATABASE
+      - MYSQL_ROOT_PASSWORD
     ports:
       - "8080:8080"
     volumes:

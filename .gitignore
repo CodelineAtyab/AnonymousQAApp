@@ -3,3 +3,5 @@
 
 logs/app.log
 src/__pycache__
+
+cont_logs/

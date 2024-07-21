@@ -1,3 +1,4 @@
+import os
 import mysql.connector
 
 
@@ -62,7 +63,11 @@ class _DatabaseConnection:
 def get_db_connection_instance():
     global _db_connection_instance
     if _db_connection_instance is None:
-        _db_connection_instance = _DatabaseConnection(host='localhost', port="9999", user='root', password='qwerty', database='ts-qa-db')
+        _db_connection_instance = _DatabaseConnection(host=os.getenv('API_DB_HOST'),
+                                                      port=os.getenv('API_DB_PORT'),
+                                                      user='root',
+                                                      password=os.getenv('MYSQL_ROOT_PASSWORD'),
+                                                      database=os.getenv('MYSQL_DATABASE'))
     return _db_connection_instance
 
 
