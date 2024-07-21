@@ -47,4 +47,5 @@ async def add_question(request: Request):
 
 
 if __name__ == "__main__":
+    # Run app on port 0.0.0.0, so it can receive traffic from external clients and not just localhost
     uvicorn.run(app, host="0.0.0.0", port=8080)
