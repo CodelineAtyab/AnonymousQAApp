@@ -9,36 +9,129 @@
       .card {
         margin: 1rem;
       }
+      .message-box {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        min-width: 200px;
+        display: none;
+      }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1 class="my-4">AnonyQues Dashboard</h1>
+      <h1 class="my-4">
+        AnonyQues Dashboard
+        <button class="btn btn-primary float-right" id="addQuestionBtn" data-toggle="modal" data-target="#addQuestionModal">Add Question</button>
+      </h1>
       <div class="row" id="qa_list">
         <!-- Cards will be appended here -->
       </div>
     </div>
 
+    <!-- Message Box -->
+    <div class="alert alert-dismissible fade show message-box" id="messageBox" role="alert">
+      <strong id="messageTitle"></strong> <span id="messageBody"></span>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <!-- Modal for Adding Question -->
+    <div class="modal fade" id="addQuestionModal" tabindex="-1" aria-labelledby="addQuestionModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addQuestionModalLabel">Add a New Question</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="addQuestionForm">
+              <div class="form-group">
+                <label for="questionId">Question ID</label>
+                <input type="text" class="form-control" id="questionId" required>
+              </div>
+              <div class="form-group">
+                <label for="questionText">Question Text</label>
+                <textarea class="form-control" id="questionText" rows="3" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script>
       const qa_list_elem = document.getElementById("qa_list");
+      const addQuestionForm = document.getElementById("addQuestionForm");
+      const messageBox = document.getElementById("messageBox");
+      const messageTitle = document.getElementById("messageTitle");
+      const messageBody = document.getElementById("messageBody");
 
-      fetch("http://localhost:8080/api/v1/questions")
+      // Fetch and display questions
+      fetch(`http://${window.location.hostname}:8080/api/v1/questions`)
       .then((response) => response.json())
       .then((jsonResponse) => {
-        Object.keys(jsonResponse).forEach((currKey) => {
+        Object.keys(jsonResponse["data"]).forEach((currKey) => {
           const newCardElem = document.createElement("div");
           newCardElem.className = "col-md-4";
           newCardElem.innerHTML = `
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title">Question ${currKey}</h5>
-                <p class="card-text">${jsonResponse[currKey]}</p>
+                <p class="card-text">${jsonResponse["data"][currKey]}</p>
               </div>
             </div>
           `;
           qa_list_elem.appendChild(newCardElem);
         });
       });
+
+      // Submit form
+      addQuestionForm.onsubmit = function(event) {
+        event.preventDefault();
+        const questionId = document.getElementById("questionId").value;
+        const questionText = document.getElementById("questionText").value;
+
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        const raw = JSON.stringify({
+          [questionId]: questionText
+        });
+
+        const requestOptions = {
+          method: "POST",
+          headers: myHeaders,
+          body: raw,
+          redirect: "follow"
+        };
+
+        fetch(`http://${window.location.hostname}:8080/api/v1/questions`, requestOptions)
+          .then((response) => response.text())
+          .then((result) => {
+            showMessage("Success", "Question added successfully!", "alert-success");
+            $('#addQuestionModal').modal('hide');
+            // Optionally, you can refresh the questions list here
+          })
+          .catch((error) => {
+            showMessage("Error", error.message, "alert-danger");
+          });
+      }
+
+      // Function to show message
+      function showMessage(title, message, alertType) {
+        messageBox.className = `alert alert-dismissible fade show message-box ${alertType}`;
+        messageTitle.innerText = title;
+        messageBody.innerText = message;
+        messageBox.style.display = "block";
+        setTimeout(() => {
+          $(messageBox).alert('close');
+        }, 3000);
+      }
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
