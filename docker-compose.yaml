@@ -13,6 +13,8 @@ services:
       - "8080:8080"
     volumes:
       - cont_logs:/app/logs
+    networks:
+      - backend
     restart: on-failure
   
   ui:
@@ -22,6 +24,8 @@ services:
       - "9090:80"
     volumes:
       - ./ui:/usr/share/nginx/html
+    networks:
+      - frontend
     restart: on-failure
     depends_on:
       - api
@@ -34,8 +38,11 @@ services:
       - MYSQL_DATABASE
     ports:
       - "9999:3306"
+    networks:
+      - backend
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - cont_db_data:/var/lib/mysql
     restart: on-failure
 
 volumes:
@@ -45,3 +52,8 @@ volumes:
       o: bind
       type: none
       device: ./cont_logs
+  cont_db_data: {}
+
+networks:
+  frontend: {}  # Use default settings
+  backend: {}  # Use default settings
