@@ -111,15 +111,32 @@
         };
 
         fetch(`http://${window.location.hostname}:8080/api/v1/questions`, requestOptions)
-          .then((response) => response.text())
+          .then((response) => response.json())
           .then((result) => {
             showMessage("Success", "Question added successfully!", "alert-success");
+            addQuestionModal.style.display = "none";
             $('#addQuestionModal').modal('hide');
-            // Optionally, you can refresh the questions list here
+            // Add the new question card to the page
+            addQuestionCard(questionId, questionText);
           })
           .catch((error) => {
             showMessage("Error", error.message, "alert-danger");
           });
+      }
+
+      // Function to add a new question card
+      function addQuestionCard(id, text) {
+        const newCardElem = document.createElement("div");
+        newCardElem.className = "col-md-4";
+        newCardElem.innerHTML = `
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Question ${id}</h5>
+              <p class="card-text">${text}</p>
+            </div>
+          </div>
+        `;
+        qa_list_elem.appendChild(newCardElem);
       }
 
       // Function to show message
