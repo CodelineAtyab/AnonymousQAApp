@@ -8,7 +8,7 @@ services:
       - "8080:8080"
     volumes:
       - cont_logs:/app/logs
-    restart: always
+    restart: on-failure
   
   ui:
     image: nginx
@@ -17,9 +17,21 @@ services:
       - "9090:80"
     volumes:
       - ./ui:/usr/share/nginx/html
-    restart: always
+    restart: on-failure
     depends_on:
       - api
+
+  db:
+    image: mysql:9.0.0
+    container_name: "qa-db-cont"
+    environment:
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE
+    ports:
+      - "9999:3306"
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: on-failure
 
 volumes:
   cont_logs:

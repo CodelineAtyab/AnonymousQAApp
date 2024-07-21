@@ -24,7 +24,6 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 
-
 dict_of_questions = {
     "q1": "Are you happy with what's gpoing on ?",
     "q2": "Are you facing any challenges ?",
